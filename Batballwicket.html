@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cricket Game</title>
+    <link rel="stylesheet" href="./Batballwicket.css">
+  </head>
+  <body>
+    <h1>Bat Ball Stump Game</h1>
+
+
+    
+
+    <button class="choice-button"
+      onclick="
+      let computerChoice= generateComputerChoice();
+      let resultMsg=getResult('Bat',computerChoice);
+      
+      showResult('Bat',computerChoice,resultMsg);
+       "
+    >
+    <img src="./imgs/bat.png" alt="Bat Image" class="choice-image">
+    </button>
+
+    <button class="choice-button"
+      onclick="
+       computerChoice= generateComputerChoice();
+       resultMsg=getResult('Ball',computerChoice);
+       showResult('Ball',computerChoice,resultMsg);
+      "
+    >
+    <img src="./imgs/ball.png" alt="Ball Image" class="choice-image">
+    </button>
+
+    <button class="choice-button"
+      onclick="
+      computerChoice=generateComputerChoice();
+      resultMsg=getResult('Stump',computerChoice);
+      showResult('Stump',computerChoice,resultMsg);
+      "
+    >
+    <img src="./imgs/stump.png" alt="stump Image" class="choice-image">
+    </button>
+
+    
+
+    <h3 id="user-move"></h3>
+    <h3 id="computer-move"></h3>
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+
+    <button onclick="
+    localStorage.clear(); resetScore();">Reset</button>
+
+    <script>
+
+     
+      //object score to update the score of my game:
+
+      let scoreStr=localStorage.getItem('Score');
+      let score;
+      resetScore(scoreStr);
+
+      function resetScore(scoreStr){
+         score=scoreStr?JSON.parse(scoreStr) : {
+          win:0,
+          lost:0,
+          tie:0,
+        };
+        score.displayScore=function () {
+          return `Score-> Win: ${score.win} ,Loss:${score.lost}, Tie: ${score.tie}`;
+        }
+        showResult();
+
+      
+    }
+    
+     
+    
+      
+       
+      function generateComputerChoice() {
+        let Choice = "";
+        let randomNumber = Math.random() * 3;
+        if (randomNumber > 0 && randomNumber < 1) {
+          return "Bat";
+        } else if (randomNumber > 1 && randomNumber <= 2) {
+          return "Ball";
+        } else {
+          return "Stump";
+        }
+      }
+
+      function getResult(userMove, computerMove) {
+        if (userMove == "Bat") {
+          if (computerMove === "Ball") {
+            score.win = score.win + 1;
+            return "User Won.";
+          } else if (computerMove === "Bat") {
+            score.tie = score.tie + 1;
+            return `It's a Tie`; //here we use backticks `` because we have touse single quotes ' for It's
+          } else if (computerMove === "Stump") {
+            score.lost = score.lost + 1;
+            return "Computer Won";
+          }
+        } else if (userMove == "Ball") {
+          if (computerChoice === "Ball") {
+            score.tie = score.tie + 1;
+            return `It's a tie`;
+          } else if (computerChoice === "Bat") {
+            score.lost = score.lost + 1;
+            return `Computer Won`; //here we use backticks `` because we have touse single quotes ' for It's
+          } else if (computerChoice === "Stump") {
+            score.win = score.win + 1;
+            return "User Won";
+          }
+        } else {
+          if (computerMove === "Ball") {
+            score.lost = score.lost + 1;
+            return `Computer Won`;
+          } else if (computerMove === "Bat") {
+            score.win = score.win + 1;
+            return `User Won`; //here we use backticks `` because we have touse single quotes ' for It's
+          } else if (computerMove === "Stump") {
+            score.tie = score.tie + 1;
+            return `It's a tie`;
+          }
+        }
+      }
+
+      function showResult(userMove, computerChoice, resultMsg) {
+
+        localStorage.setItem('Score',JSON.stringify(score));
+
+        document.querySelector('#user-move').innerText=userMove?`You have chosen ${userMove}`:'';
+        document.querySelector('#computer-move').innerText=computerChoice?`Computer Chose is ${computerChoice}`:'';
+        document.querySelector('#result').innerText=resultMsg ||'';
+        document.querySelector('#score').innerText=score.displayScore();
+
+        
+      }
+    </script>
+  </body>
+</html>
